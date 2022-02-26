@@ -4,7 +4,7 @@ $(function () {
         
         $.ajax({
             type: 'POST',
-            url: "include/utils.php",
+            url: "requests.php",
             data: {
                 "request": "update_total_outcome",
                 "deal_id": $('#opened_deal_id').text(),

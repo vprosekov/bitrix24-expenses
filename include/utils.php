@@ -32,9 +32,8 @@ function out($var, $var_name = '')
 //     curl_close($curl);
 //     return $result;
 // }
-function sendQuery($method, $params)
+function sendQuery($webhookaddress, $method, $params)
 {
-    global $webhookaddress;
     $queryUrl = $webhookaddress . $method . '.json';
     $queryData = http_build_query($params);
 
@@ -52,27 +51,38 @@ function sendQuery($method, $params)
     curl_close($curl);
     return $result;
 }
-// if isset request
-if (isset($_REQUEST['request'])) {
-    if ($_REQUEST['request'] === "update_total_outcome") {
-        if (isset($_REQUEST['deal_id']) && isset($_REQUEST['total_outcome'])) {
-            $deal_id = $_REQUEST['deal_id'];
-            $total_outcome = $_REQUEST['total_outcome'];
 
-            $response = sendQuery('crm.deal.update', ['id' => $deal_id, 'fields' => ['UF_CRM_1645710698211' => "{$total_outcome}|RUB"]]);
-            // out($response);
-            if (!isset($response['result'])) {
-                echo '{"result":false}';
-                exit();
-            }
-            // out $response as json object
-            echo(json_encode($response));
-        }
-    } else {
-        echo '{"result":false}';
-        exit();
+// function to upda[te totalOutcome of deaal by deal_id and total_outcome
+function updateTotalOutcome($webhookaddress, $deal_id, $total_outcome)
+{
+    $result = sendQuery($webhookaddress, 'crm.deal.update', ['id' => $deal_id, 'fields' => ['UF_CRM_1645710698211' => "{$total_outcome}|RUB"]]);
+    if(isset($result['result']) && $result["result"]===true) {
+        return true;
     }
-} else {
-    echo '{"result":false}';
-    exit();
+    return false;
 }
+
+// // if isset request
+// if (isset($_REQUEST['request'])) {
+//     if ($_REQUEST['request'] === "update_total_outcome") {
+//         if (isset($_REQUEST['deal_id']) && isset($_REQUEST['total_outcome'])) {
+//             $deal_id = $_REQUEST['deal_id'];
+//             $total_outcome = $_REQUEST['total_outcome'];
+
+//             $response = sendQuery('crm.deal.update', ['id' => $deal_id, 'fields' => ['UF_CRM_1645710698211' => "{$total_outcome}|RUB"]]);
+//             // out($response);
+//             if (!isset($response['result'])) {
+//                 echo '{"result":false}';
+//                 exit();
+//             }
+//             // out $response as json object
+//             echo(json_encode($response));
+//         }
+//     } else {
+//         echo '{"result":false}';
+//         exit();
+//     }
+// } else {
+//     echo '{"result":false}';
+//     exit();
+// }

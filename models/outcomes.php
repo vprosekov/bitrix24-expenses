@@ -1,4 +1,5 @@
 <?php
+require_once "include/utils.php"; //подключение бд
 
 // function to get all outcomes with deal_id
 function get_outcomes($deal_id)
